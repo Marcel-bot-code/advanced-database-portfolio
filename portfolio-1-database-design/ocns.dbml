@@ -1,0 +1,67 @@
+Table department {
+  department_id int [pk]
+  dept_name varchar
+  hod_name varchar
+  office_phone varchar
+}
+
+Table programme {
+  programme_id int [pk]
+  programme_name varchar
+  duration_years int
+  department_id int [ref: > department.department_id]
+}
+
+Table student {
+  student_id int [pk]
+  matric_no varchar
+  first_name varchar
+  last_name varchar
+  level int
+  programme_id int [ref: > programme.programme_id]
+}
+
+Table lecturer {
+  lecturer_id int [pk]
+  staff_no varchar
+  first_name varchar
+  last_name varchar
+  email varchar
+  department_id int [ref: > department.department_id]
+}
+
+Table course {
+  course_id int [pk]
+  course_code varchar
+  course_title varchar
+  credit_units int
+  semester varchar
+  lecturer_id int [ref: > lecturer.lecturer_id]
+}
+
+Table registration {
+  registration_id int [pk]
+  student_id int [ref: > student.student_id]
+  course_id int [ref: > course.course_id]
+  session varchar
+  ca_score decimal
+  exam_score decimal
+}
+
+Table payment {
+  payment_id int [pk]
+  student_id int [ref: > student.student_id]
+  amount decimal
+  payment_date date
+  paystack_ref varchar
+  session varchar
+}
+
+Table clinical_posting {
+  posting_id int [pk]
+  student_id int [ref: > student.student_id]
+  hospital_name varchar
+  ward varchar
+  start_date date
+  supervisor_name varchar
+}
