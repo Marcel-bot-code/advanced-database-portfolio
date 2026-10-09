@@ -1,7 +1,7 @@
 Table department {
   department_id int [pk]
   dept_name varchar
-  hod_name varchar
+  hod_lecturer_id int [ref: - lecturer.lecturer_id, note: 'Head of Department is a lecturer']
   office_phone varchar
 }
 
@@ -46,6 +46,10 @@ Table registration {
   session varchar
   ca_score decimal
   exam_score decimal
+
+  indexes {
+    (student_id, course_id, session) [unique]
+  }
 }
 
 Table payment {
