@@ -49,3 +49,10 @@ MongoDB suits the parts of OCNS where records vary and speed of reading matters:
 - **Key-value (Redis):** stores a value under a key in memory, ideal for login sessions or caching the CBT question paper during an exam.
 - **Wide-column (Cassandra):** spreads huge write-heavy tables across many servers, suited to logging every click or CBT answer at national scale.
 - **Graph (Neo4j):** stores relationships as first-class data, useful for prerequisite chains between courses or tracing who supervised whom on which posting.
+
+## Screenshots
+
+The screenshots in this folder were taken in the MongoDB Atlas Data Explorer, because the free M0 cluster has no in-browser mongosh. The Data Explorer runs the same query and pipeline as `mongo_commands.js`:
+
+- `atlas_aggregate_avg_score_part1.png` / `part2.png` – section 4 aggregate (`$unwind` → `$group` → `$project` → `$sort`), run in the Aggregations tab: 12 courses with their average score, highest first.
+- `atlas_explain_ixscan_tree.jpg` / `atlas_explain_ixscan_raw.jpg` – section 5: after `createIndex({ name: 1 })`, Explain on `{ name: "Hauwa Lawal" }` shows FETCH → IXSCAN on index `name_1` (1 key examined, 1 document examined).
