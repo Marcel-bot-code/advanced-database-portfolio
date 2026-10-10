@@ -3,7 +3,12 @@
 Code: [replication_commands.js](replication_commands.js)
 Practical evidence comes from the free MongoDB Atlas M0 cluster used in Portfolio 4, which Atlas runs as a **3-server replica set** (one PRIMARY, two SECONDARY).
 
-<!-- Screenshots: atlas_overview.png (PRIMARY/SECONDARY nodes), db_hello.png (or rs_status.png), failover.png if done -->
+**Evidence (Atlas cluster overview):** Cluster0 runs MongoDB 8.0.34 on the free tier in AWS Cape Town (af-south-1) as three servers – `shard-00-00` SECONDARY, `shard-00-01` PRIMARY and `shard-00-02` SECONDARY.
+
+![Replica set nodes](atlas_1_replica_set_nodes.jpg)
+![Cluster overview](atlas_2_cluster_overview.jpg)
+
+`replication_commands.js` contains the `db.hello()` / `rs.status()` checks and a majority write, for running from mongosh.
 
 ## Replication – what if the primary crashes during exams?
 
