@@ -27,14 +27,22 @@ Payments are a **separate** `payments` collection: `{ student_id: "OCNS/BN/2025/
 
 | # | Command | Result |
 |---|---|---|
-| 1 | `insertMany` – 10 students, 10 payments | `acknowledged: true`, 10 ids each |
+| 1 | `insertMany` – 10 students, 10 payments | both collections hold 10 documents |
 | 2 | `find({ programme: "Basic Nursing" })` | 3 students: Amaka Okafor, Chinedu Adeyemi, Hauwa Lawal |
 | 2b | `find({ "courses.code": "NUR101" })` – searching **inside** the embedded array | 4 students |
 | 3 | `aggregate` `$unwind` + `$group` – average score per course | 12 courses, highest GST101 (77.0), lowest MID101 (38.5) |
 | 3b | `aggregate` `$lookup` – total paid per student | Chinedu Adeyemi top with ₦493,000; 2 students have paid nothing |
-| 4 | `createIndex({ name: 1 })` then `explain()` | winning plan changes from `COLLSCAN` to `IXSCAN` |
+| 4 | `createIndex({ name: 1 })` then Explain | search on `programme` (no index): `COLLSCAN`, 10 docs examined for 3 returned; search on `name` (indexed): `IXSCAN` on `name_1`, 1 examined for 1 returned |
 
-<!-- Screenshots: insert.png, find.png, aggregate.png, index.png -->
+Screenshots taken in MongoDB Atlas Data Explorer (Cluster0, MongoDB 8.0, AWS Cape Town):
+
+![Collections](atlas_1_collections.jpg)
+![Find Basic Nursing](atlas_2_find.jpg)
+![Average score per course](atlas_3_aggregate.jpg)
+![Total paid per student with $lookup](atlas_3b_lookup.jpg)
+![Indexes](atlas_4_index.jpg)
+![Explain – COLLSCAN without an index](atlas_5_explain_collscan.jpg)
+![Explain – IXSCAN with name_1](atlas_6_explain_ixscan.jpg)
 
 ## Embed or reference?
 
@@ -49,10 +57,3 @@ MongoDB suits the parts of OCNS where records vary and speed of reading matters:
 - **Key-value (Redis):** stores a value under a key in memory, ideal for login sessions or caching the CBT question paper during an exam.
 - **Wide-column (Cassandra):** spreads huge write-heavy tables across many servers, suited to logging every click or CBT answer at national scale.
 - **Graph (Neo4j):** stores relationships as first-class data, useful for prerequisite chains between courses or tracing who supervised whom on which posting.
-
-## Screenshots
-
-The screenshots in this folder were taken in the MongoDB Atlas Data Explorer, because the free M0 cluster has no in-browser mongosh. The Data Explorer runs the same query and pipeline as `mongo_commands.js`:
-
-- `atlas_aggregate_avg_score_part1.png` / `part2.png` – section 4 aggregate (`$unwind` → `$group` → `$project` → `$sort`), run in the Aggregations tab: 12 courses with their average score, highest first.
-- `atlas_explain_ixscan_tree.jpg` / `atlas_explain_ixscan_raw.jpg` – section 5: after `createIndex({ name: 1 })`, Explain on `{ name: "Hauwa Lawal" }` shows FETCH → IXSCAN on index `name_1` (1 key examined, 1 document examined).
